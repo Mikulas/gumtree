@@ -69,6 +69,7 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
 
     @SuppressWarnings("unchecked")
     protected void buildTree(TreeContext context, ParserRuleContext ct) {
+        context.createTree(1, "label", "typeLabel");
 //        int type = ct.getType();
 //        String tokenName = getTokenName(type);
 //        String label = ct.getText();

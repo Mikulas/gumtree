@@ -29,7 +29,7 @@ import org.antlr.runtime.tree.CommonTree;
 import java.io.IOException;
 import java.io.Reader;
 
-@Register(id = "php-antlr", accept = "\\.php.?$")
+//@Register(id = "php-antlr", accept = "\\.php.?$")
 public class PhpTreeGenerator extends AbstractAntlrTreeGenerator {
 
     @Override
