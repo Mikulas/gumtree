@@ -22,13 +22,7 @@ package com.github.gumtreediff.gen.php71;
 
 import com.github.gumtreediff.gen.Register;
 import com.github.gumtreediff.gen.antlr4.AbstractAntlr4TreeGenerator;
-import com.github.gumtreediff.gen.php.PhpLexer;
-import com.github.gumtreediff.gen.php.PhpParser;
-import org.antlr.runtime.ANTLRReaderStream;
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenRewriteStream;
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.v4.runtime.*;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -37,16 +31,18 @@ import java.io.Reader;
 public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
 
     @Override
-    protected CommonTree getStartSymbol(Reader r) throws RecognitionException, IOException {
-        ANTLRStringStream stream = new ANTLRReaderStream(r);
-        PhpLexer l = new PhpLexer(stream);
-        tokens = new TokenRewriteStream(l);
-        PhpParser p = new PhpParser(tokens);
-        return p.prog().getTree();
+    protected ParserRuleContext getStartSymbol(Reader r) throws RecognitionException, IOException {
+        ANTLRInputStream stream = new ANTLRInputStream(r);
+        PHPLexer l = new PHPLexer(stream);
+
+        CommonTokenStream tokens = new CommonTokenStream(l);
+        PHPParser p = new PHPParser(tokens);
+        p.setBuildParseTree(true);
+        return p.getContext();
     }
 
     @Override
     protected final String[] getTokenNames() {
-        return PhpParser.tokenNames;
+        return PHPParser.tokenNames;
     }
 }

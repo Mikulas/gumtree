@@ -24,6 +24,10 @@ THE SOFTWARE.
 
 parser grammar PHPParser;
 
+@header {
+    package com.github.gumtreediff.gen.php71;
+}
+
 options { tokenVocab=PHPLexer; }
 
 // HTML

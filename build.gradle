@@ -74,6 +74,10 @@ configure(subprojects.findAll { it.name == 'gen.antlr4' || it.name.startsWith('g
 		antlr "org.antlr:antlr4:4.5.3"
 	}
 
+	generateGrammarSource {
+		outputDirectory = new File("${project.buildDir}/generated-src/antlr/main/com/github/gumtreediff/gen/php71".toString())
+	}
+
 	if (it.name.startsWith('gen.antlr4-')) {
 		dependencies {
 			compile project(':gen.antlr4')

@@ -26,6 +26,10 @@ lexer grammar PHPLexer;
 
 channels { PhpComments, ErrorLexem }
 
+@header {
+    package com.github.gumtreediff.gen.php71;
+}
+
 @lexer::members
 {public boolean AspTags = true;
 boolean _scriptTag;

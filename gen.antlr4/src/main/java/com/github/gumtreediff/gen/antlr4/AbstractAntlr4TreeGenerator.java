@@ -23,8 +23,7 @@ package com.github.gumtreediff.gen.antlr4;
 import com.github.gumtreediff.gen.TreeGenerator;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.CommonTree;
+import org.antlr.v4.runtime.*;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -44,17 +43,16 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
     public AbstractAntlr4TreeGenerator() {
     }
 
-    protected abstract CommonTree getStartSymbol(Reader r) throws RecognitionException, IOException;
+    protected abstract ParserRuleContext getStartSymbol(Reader r) throws RecognitionException, IOException;
 
     @Override
     public TreeContext generate(Reader r) throws IOException {
         try {
-            CommonTree ct = getStartSymbol(r);
+            ParserRuleContext ct = getStartSymbol(r);
             TreeContext context = new TreeContext();
             buildTree(context, ct);
             return context;
         } catch (RecognitionException e) {
-            System.out.println("at " + e.line + ":" + e.charPositionInLine);
             e.printStackTrace();
         }
         return null;
@@ -70,31 +68,31 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    protected void buildTree(TreeContext context, CommonTree ct) {
-        int type = ct.getType();
-        String tokenName = getTokenName(type);
-        String label = ct.getText();
-        if (tokenName.equals(label))
-            label = ITree.NO_LABEL;
-
-        ITree t = context.createTree(type, label, tokenName);
-
-        int start = startPos(ct.getTokenStartIndex());
-        int stop = stopPos(ct.getTokenStopIndex());
-        t.setPos(start);
-        t.setLength(stop - start + 1); // FIXME check if this + 1 make sense ?
-
-        if (trees.isEmpty())
-            context.setRoot(t);
-        else
-            t.setParentAndUpdateChildren(trees.peek());
-
-        if (ct.getChildCount() > 0) {
-            trees.push(t);
-            for (CommonTree cct : (List<CommonTree>) ct.getChildren())
-                buildTree(context, cct);
-            trees.pop();
-        }
+    protected void buildTree(TreeContext context, ParserRuleContext ct) {
+//        int type = ct.getType();
+//        String tokenName = getTokenName(type);
+//        String label = ct.getText();
+//        if (tokenName.equals(label))
+//            label = ITree.NO_LABEL;
+//
+//        ITree t = context.createTree(type, label, tokenName);
+//
+//        int start = startPos(ct.getTokenStartIndex());
+//        int stop = stopPos(ct.getTokenStopIndex());
+//        t.setPos(start);
+//        t.setLength(stop - start + 1); // FIXME check if this + 1 make sense ?
+//
+//        if (trees.isEmpty())
+//            context.setRoot(t);
+//        else
+//            t.setParentAndUpdateChildren(trees.peek());
+//
+//        if (ct.getChildCount() > 0) {
+//            trees.push(t);
+//            for (CommonTree cct : (List<CommonTree>) ct.getChildren())
+//                buildTree(context, cct);
+//            trees.pop();
+//        }
     }
 
     private int startPos(int tkPosition) {
