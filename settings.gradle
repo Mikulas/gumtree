@@ -16,4 +16,6 @@ include 'core',
         'gen.antlr-php',
         'gen.antlr-r',
         'gen.antlr-xml',
+        'gen.antlr4',
+        'gen.antlr4-php',
         'benchmark'
