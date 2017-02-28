@@ -52,9 +52,11 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
         System.out.println(tree);
 
         TreeContext context = new TreeContext();
+        ITree root = context.createTree(1, "label", "typeLabel");
+        context.setRoot(root);
 
         try {
-            buildTree(context, tree);
+            buildTree(context, root, tree, 0);
 
         } catch (NullPointerException e) {
             System.out.println(e.getMessage());
@@ -75,16 +77,30 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    protected void buildTree(TreeContext context, ParseTree ct) {
-        ITree t = context.createTree(1, "label", "typeLabel");
-
-        int childrenCount = ct.getChildCount();
-
-        System.out.println(ct.getText());
-        for (int childIndex = 0; childIndex < childrenCount; childIndex++) {
-            ParseTree cct = ct.getChild(childIndex);
-            buildTree(context, cct);
-        }
+    abstract protected void buildTree(TreeContext context, ITree root, ParseTree ct, int _depth);
+//    {
+//        if (ct instanceof FunctionDeclarationContext)
+//
+//        ITree tree = context.createTree(2, "child", "childType");
+//        tree.setParentAndUpdateChildren(root);
+//
+//        int childrenCount = ct.getChildCount();
+//
+//        tree.setLabel(ct.getText());
+//
+//        for (int i = 0; i < _depth; i++) {
+//            System.out.print("  ");
+//        }
+//        System.out.print(ct.getClass());
+//        System.out.print("  ");
+//        System.out.println(ct.getText());
+//
+//        for (int childIndex = 0; childIndex < childrenCount; childIndex++) {
+//            ParseTree cct = ct.getChild(childIndex);
+//
+//            buildTree(context, tree, cct, _depth + 1);
+//        }
+//
 //        int type = ct.getType();
 //        String tokenName = getTokenName(type);
 //        String label = ct.getText();
@@ -109,7 +125,7 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
 //                buildTree(context, cct);
 //            trees.pop();
 //        }
-    }
+//    }
 
     private int startPos(int tkPosition) {
         if (tkPosition == -1) return 0;

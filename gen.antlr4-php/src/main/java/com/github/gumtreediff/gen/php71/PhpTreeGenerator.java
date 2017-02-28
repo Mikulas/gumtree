@@ -22,6 +22,8 @@ package com.github.gumtreediff.gen.php71;
 
 import com.github.gumtreediff.gen.Register;
 import com.github.gumtreediff.gen.antlr4.AbstractAntlr4TreeGenerator;
+import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.TreeContext;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -50,5 +52,32 @@ public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
     protected final String[] getTokenNames() {
         System.out.println("MY PARSER getTokenNames");
         return PHPParser.tokenNames;
+    }
+
+    @Override
+    protected void buildTree(TreeContext context, ITree root, ParseTree ct, int _depth) {
+        ITree tree;
+        if (ct instanceof PHPParser.FunctionDeclarationContext) {
+            tree = context.createTree(3, "attributes", "attributes");
+            ((PHPParser.FunctionDeclarationContext) ct).attributes();
+
+        } else {
+            tree = context.createTree(2, ct.getText(), "childType");
+            for (int i = 0; i < _depth; i++) {
+                System.out.print("  ");
+            }
+            System.out.print(ct.getClass());
+            System.out.print("  ");
+            System.out.println(ct.getText());
+        }
+
+        tree.setParentAndUpdateChildren(root);
+
+        int childrenCount = ct.getChildCount();
+        for (int childIndex = 0; childIndex < childrenCount; childIndex++) {
+            ParseTree cct = ct.getChild(childIndex);
+
+            buildTree(context, tree, cct, _depth + 1);
+        }
     }
 }
