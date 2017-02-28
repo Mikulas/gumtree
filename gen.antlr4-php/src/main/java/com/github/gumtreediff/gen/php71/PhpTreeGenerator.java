@@ -37,26 +37,24 @@ import java.util.Map;
 @Register(id = "php-antlr", accept = "\\.php.?$")
 public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
 
+    CommonTokenStream tokens;
     Map<String, Integer> typeIds = new HashMap<String, Integer>();
     Map<String, String> typeLabels = new HashMap<String, String>();
 
     @Override
     protected ParseTree getTree(Reader r) throws RecognitionException, IOException {
-        System.out.println("MY PARSER getParser");
-
         ANTLRInputStream stream = new ANTLRInputStream(r);
         PHPLexer l = new PHPLexer(stream);
 
-        CommonTokenStream tokens = new CommonTokenStream(l);
+        tokens = new CommonTokenStream(l);
         PHPParser p = new PHPParser(tokens);
         p.setBuildParseTree(true);
 
-        return p.topStatement();
+        return p.phpBlock();
     }
 
     @Override
     protected final String[] getTokenNames() {
-        System.out.println("MY PARSER getTokenNames");
         return PHPParser.tokenNames;
     }
 
@@ -73,28 +71,27 @@ public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
     }
 
     @Override
-    protected void buildTree(TreeContext context, ITree root, ParseTree ct, int _depth) {
+    protected void buildTree(TreeContext context, ITree root, ParseTree ct) {
         ITree tree = getTree(context, ct);
         tree.setParentAndUpdateChildren(root);
 
+        Token firstToken = tokens.get(ct.getSourceInterval().a);
+        Token lastToken = tokens.get(ct.getSourceInterval().b);
+
+        tree.setPos(firstToken.getStartIndex());
+        tree.setLength(lastToken.getStopIndex() - tree.getPos() + 1); // count last char
+
         if (ct instanceof TerminalNode) {
             tree.setLabel(ct.getText());
-            tree.setPos(((TerminalNode) ct).getSymbol().getStartIndex());
-            tree.setLength(((TerminalNode) ct).getSymbol().getStopIndex() - tree.getPos());
         } else {
             tree.setLabel(ct.getClass().getSimpleName());
         }
-
-        for (int i = 0; i < _depth; i++) {
-            System.out.print("  ");
-        }
-        System.out.println(tree.getLabel());
 
         int childrenCount = ct.getChildCount();
         for (int childIndex = 0; childIndex < childrenCount; childIndex++) {
             ParseTree cct = ct.getChild(childIndex);
 
-            buildTree(context, tree, cct, _depth + 1);
+            buildTree(context, tree, cct);
         }
     }
 }

@@ -48,15 +48,13 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
     @Override
     public TreeContext generate(Reader r) throws IOException {
         ParseTree tree = getTree(r);
-        System.out.print("tree: ");
-        System.out.println(tree);
 
         TreeContext context = new TreeContext();
         ITree root = context.createTree(1, "label", "typeLabel");
         context.setRoot(root);
 
         try {
-            buildTree(context, root, tree, 0);
+            buildTree(context, root, tree);
 
         } catch (NullPointerException e) {
             System.out.println(e.getMessage());
@@ -77,55 +75,7 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    abstract protected void buildTree(TreeContext context, ITree root, ParseTree ct, int _depth);
-//    {
-//        if (ct instanceof FunctionDeclarationContext)
-//
-//        ITree tree = context.createTree(2, "child", "childType");
-//        tree.setParentAndUpdateChildren(root);
-//
-//        int childrenCount = ct.getChildCount();
-//
-//        tree.setLabel(ct.getText());
-//
-//        for (int i = 0; i < _depth; i++) {
-//            System.out.print("  ");
-//        }
-//        System.out.print(ct.getClass());
-//        System.out.print("  ");
-//        System.out.println(ct.getText());
-//
-//        for (int childIndex = 0; childIndex < childrenCount; childIndex++) {
-//            ParseTree cct = ct.getChild(childIndex);
-//
-//            buildTree(context, tree, cct, _depth + 1);
-//        }
-//
-//        int type = ct.getType();
-//        String tokenName = getTokenName(type);
-//        String label = ct.getText();
-//        if (tokenName.equals(label))
-//            label = ITree.NO_LABEL;
-//
-//        ITree t = context.createTree(type, label, tokenName);
-//
-//        int start = startPos(ct.getTokenStartIndex());
-//        int stop = stopPos(ct.getTokenStopIndex());
-//        t.setPos(start);
-//        t.setLength(stop - start + 1); // FIXME check if this + 1 make sense ?
-//
-//        if (trees.isEmpty())
-//            context.setRoot(t);
-//        else
-//            t.setParentAndUpdateChildren(trees.peek());
-//
-//        if (ct.getChildCount() > 0) {
-//            trees.push(t);
-//            for (CommonTree cct : (List<CommonTree>) ct.getChildren())
-//                buildTree(context, cct);
-//            trees.pop();
-//        }
-//    }
+    abstract protected void buildTree(TreeContext context, ITree root, ParseTree ct);
 
     private int startPos(int tkPosition) {
         if (tkPosition == -1) return 0;
