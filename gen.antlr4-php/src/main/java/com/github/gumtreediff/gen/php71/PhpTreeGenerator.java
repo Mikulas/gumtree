@@ -50,6 +50,11 @@ public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
         PHPParser p = new PHPParser(tokens);
         p.setBuildParseTree(true);
 
+        int ruleId = 10;
+        for (String rule : p.getRuleNames()) {
+            typeIds.put(rule, ruleId++);
+        }
+
         return p.phpBlock();
     }
 
@@ -59,19 +64,29 @@ public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
     }
 
     private ITree getTree(TreeContext context, ParseTree ct) {
-        String name = ct.getClass().getName();
+        int index;
+        String name = ct.getClass().getSimpleName();
 
-        if (!typeIds.containsKey(name)) {
-            String type = ct.getClass().getSimpleName();
-            typeIds.put(name, typeIds.size() + 10); // reserve lower 10 for parent class abstraction
-            typeLabels.put(name, type);
+        if (ct instanceof ParserRuleContext) {
+            index = ((ParserRuleContext) ct).getRuleIndex();
+
+        } else {
+            assert ct instanceof TerminalNode;
+            index = 100000; // assumes there are not more rules in parser than this
         }
 
-        return context.createTree(typeIds.get(name), null, typeLabels.get(name));
+        return context.createTree(index, null, name);
     }
 
     @Override
     protected void buildTree(TreeContext context, ITree root, ParseTree ct) {
+        int childrenCount = ct.getChildCount();
+        if (childrenCount == 1) {
+            // Prevent parser context from cluttering output tree
+            buildTree(context, root, ct.getChild(0));
+            return;
+        }
+
         ITree tree = getTree(context, ct);
         tree.setParentAndUpdateChildren(root);
 
@@ -87,7 +102,6 @@ public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
             tree.setLabel(ct.getClass().getSimpleName());
         }
 
-        int childrenCount = ct.getChildCount();
         for (int childIndex = 0; childIndex < childrenCount; childIndex++) {
             ParseTree cct = ct.getChild(childIndex);
 
