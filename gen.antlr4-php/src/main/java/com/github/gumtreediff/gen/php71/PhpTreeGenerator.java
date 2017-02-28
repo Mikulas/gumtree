@@ -27,12 +27,18 @@ import com.github.gumtreediff.tree.TreeContext;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 
 @Register(id = "php-antlr", accept = "\\.php.?$")
 public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
+
+    Map<String, Integer> typeIds = new HashMap<String, Integer>();
+    Map<String, String> typeLabels = new HashMap<String, String>();
 
     @Override
     protected ParseTree getTree(Reader r) throws RecognitionException, IOException {
@@ -54,24 +60,35 @@ public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
         return PHPParser.tokenNames;
     }
 
-    @Override
-    protected void buildTree(TreeContext context, ITree root, ParseTree ct, int _depth) {
-        ITree tree;
-        if (ct instanceof PHPParser.FunctionDeclarationContext) {
-            tree = context.createTree(3, "attributes", "attributes");
-            ((PHPParser.FunctionDeclarationContext) ct).attributes();
+    private ITree getTree(TreeContext context, ParseTree ct) {
+        String name = ct.getClass().getName();
 
-        } else {
-            tree = context.createTree(2, ct.getText(), "childType");
-            for (int i = 0; i < _depth; i++) {
-                System.out.print("  ");
-            }
-            System.out.print(ct.getClass());
-            System.out.print("  ");
-            System.out.println(ct.getText());
+        if (!typeIds.containsKey(name)) {
+            String type = ct.getClass().getSimpleName();
+            typeIds.put(name, typeIds.size() + 10); // reserve lower 10 for parent class abstraction
+            typeLabels.put(name, type);
         }
 
+        return context.createTree(typeIds.get(name), null, typeLabels.get(name));
+    }
+
+    @Override
+    protected void buildTree(TreeContext context, ITree root, ParseTree ct, int _depth) {
+        ITree tree = getTree(context, ct);
         tree.setParentAndUpdateChildren(root);
+
+        if (ct instanceof TerminalNode) {
+            tree.setLabel(ct.getText());
+            tree.setPos(((TerminalNode) ct).getSymbol().getStartIndex());
+            tree.setLength(((TerminalNode) ct).getSymbol().getStopIndex() - tree.getPos());
+        } else {
+            tree.setLabel(ct.getClass().getSimpleName());
+        }
+
+        for (int i = 0; i < _depth; i++) {
+            System.out.print("  ");
+        }
+        System.out.println(tree.getLabel());
 
         int childrenCount = ct.getChildCount();
         for (int childIndex = 0; childIndex < childrenCount; childIndex++) {
