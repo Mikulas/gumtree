@@ -37,9 +37,8 @@ import java.util.Map;
 @Register(id = "php-antlr", accept = "\\.php.?$")
 public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
 
-    CommonTokenStream tokens;
-    Map<String, Integer> typeIds = new HashMap<String, Integer>();
-    Map<String, String> typeLabels = new HashMap<String, String>();
+    private CommonTokenStream tokens;
+    HashMap<Integer, String> rules = new HashMap<Integer, String>();
 
     @Override
     protected ParseTree getTree(Reader r) throws RecognitionException, IOException {
@@ -50,9 +49,9 @@ public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
         PHPParser p = new PHPParser(tokens);
         p.setBuildParseTree(true);
 
-        int ruleId = 10;
-        for (String rule : p.getRuleNames()) {
-            typeIds.put(rule, ruleId++);
+        // reverse name->index rule map
+        for (Map.Entry<String, Integer> entry : p.getRuleIndexMap().entrySet()) {
+            rules.put(entry.getValue(), entry.getKey());
         }
 
         return p.phpBlock();
@@ -69,6 +68,9 @@ public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
 
         if (ct instanceof ParserRuleContext) {
             index = ((ParserRuleContext) ct).getRuleIndex();
+            // Some simple rules extend rules without changing rule index,
+            // if that is the case, set node name to that parent.
+            name = rules.get(index);
 
         } else {
             assert ct instanceof TerminalNode;
