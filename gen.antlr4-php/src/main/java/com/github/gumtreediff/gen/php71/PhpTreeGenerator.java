@@ -83,11 +83,6 @@ public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
     @Override
     protected void buildTree(TreeContext context, ITree root, ParseTree ct) {
         int childrenCount = ct.getChildCount();
-        if (childrenCount == 1) {
-            // Prevent parser context from cluttering output tree
-            buildTree(context, root, ct.getChild(0));
-            return;
-        }
 
         ITree tree = getTree(context, ct);
         tree.setParentAndUpdateChildren(root);
