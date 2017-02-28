@@ -23,6 +23,8 @@ package com.github.gumtreediff.gen.php71;
 import com.github.gumtreediff.gen.Register;
 import com.github.gumtreediff.gen.antlr4.AbstractAntlr4TreeGenerator;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -31,18 +33,22 @@ import java.io.Reader;
 public class PhpTreeGenerator extends AbstractAntlr4TreeGenerator {
 
     @Override
-    protected ParserRuleContext getStartSymbol(Reader r) throws RecognitionException, IOException {
+    protected ParseTree getTree(Reader r) throws RecognitionException, IOException {
+        System.out.println("MY PARSER getParser");
+
         ANTLRInputStream stream = new ANTLRInputStream(r);
         PHPLexer l = new PHPLexer(stream);
 
         CommonTokenStream tokens = new CommonTokenStream(l);
         PHPParser p = new PHPParser(tokens);
         p.setBuildParseTree(true);
-        return p.getContext();
+
+        return p.topStatement();
     }
 
     @Override
     protected final String[] getTokenNames() {
+        System.out.println("MY PARSER getTokenNames");
         return PHPParser.tokenNames;
     }
 }

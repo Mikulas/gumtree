@@ -24,12 +24,12 @@ import com.github.gumtreediff.gen.TreeGenerator;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
@@ -43,19 +43,26 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
     public AbstractAntlr4TreeGenerator() {
     }
 
-    protected abstract ParserRuleContext getStartSymbol(Reader r) throws RecognitionException, IOException;
+    protected abstract ParseTree getTree(Reader r) throws RecognitionException, IOException;
 
     @Override
     public TreeContext generate(Reader r) throws IOException {
+        ParseTree tree = getTree(r);
+        System.out.print("tree: ");
+        System.out.println(tree);
+
+        TreeContext context = new TreeContext();
+
         try {
-            ParserRuleContext ct = getStartSymbol(r);
-            TreeContext context = new TreeContext();
-            buildTree(context, ct);
-            return context;
-        } catch (RecognitionException e) {
+            buildTree(context, tree);
+
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
+            throw e;
         }
-        return null;
+
+        return context;
     }
 
     protected abstract String[] getTokenNames();
@@ -68,8 +75,16 @@ public abstract class AbstractAntlr4TreeGenerator extends TreeGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    protected void buildTree(TreeContext context, ParserRuleContext ct) {
-        context.createTree(1, "label", "typeLabel");
+    protected void buildTree(TreeContext context, ParseTree ct) {
+        ITree t = context.createTree(1, "label", "typeLabel");
+
+        int childrenCount = ct.getChildCount();
+
+        System.out.println(ct.getText());
+        for (int childIndex = 0; childIndex < childrenCount; childIndex++) {
+            ParseTree cct = ct.getChild(childIndex);
+            buildTree(context, cct);
+        }
 //        int type = ct.getType();
 //        String tokenName = getTokenName(type);
 //        String label = ct.getText();
