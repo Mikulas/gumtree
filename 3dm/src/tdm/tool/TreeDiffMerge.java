@@ -244,7 +244,7 @@ public class TreeDiffMerge {
                 new LongOpt("Xmatchinginfile", LongOpt.NO_ARGUMENT, null, '\u0005'),
 
         };
-        Getopt g = new Getopt("3DM", args, "e::c:mdp", lopts);
+        Getopt g = new Getopt("3DM", args, "e::c:mdpL", lopts);
         int c;
         String arg;
         while ((c = g.getopt()) != -1) {
@@ -279,7 +279,7 @@ public class TreeDiffMerge {
                 case '\u0004': // Load right matchings from file
                     rightMatchFromFile = true;
                     break;
-                case '\u0005': // Load right matchings from file
+                case 'L': // Load right matchings from file
                     leftMatchFromFile = true;
                     rightMatchFromFile = true;
                     break;

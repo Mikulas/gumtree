@@ -39,6 +39,8 @@ public class TriMatching {
     public TriMatching(BranchNode left, BaseNode base, BranchNode right,
                        Class leftMatchType, Class rightMatchType) {
         Matching m = null;
+
+
         try {
             m = (Matching) rightMatchType.newInstance();
         } catch (Exception e) {
@@ -49,12 +51,13 @@ public class TriMatching {
         rightRoot = right;
         baseRoot = base;
         swapLeftRight(base);
+
+
         try {
             m = (Matching) leftMatchType.newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Fatal Error instantiating matching class " + leftMatchType.getName());
         }
-
         m.buildMatching(base, left);
         setPartners(left, false);
         setPartners(right, true);
