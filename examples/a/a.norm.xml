@@ -1,0 +1,135 @@
+<?xml version="1.0" ?>
+<root>
+  <context></context>
+  <tree type="typeLabel" value="label">
+    <tree type="phpBlock" value="PhpBlockContext">
+      <tree type="topStatement" value="TopStatementContext">
+        <tree type="nonEmptyStatement" value="NonEmptyStatementContext">
+          <tree type="echoStatement" value="EchoStatementContext">
+            <tree type="TerminalNodeImpl" value="echo"></tree>
+            <tree type="expressionList" value="ExpressionListContext">
+              <tree type="expression" value="ExpressionContext">
+                <tree type="andOrExpression" value="AndOrExpressionContext">
+                  <tree type="comparisonExpression" value="ComparisonExpressionContext">
+                    <tree type="additionExpression" value="AdditionExpressionContext">
+                      <tree type="multiplicationExpression" value="MultiplicationExpressionContext">
+                        <tree type="notLeftRecursionExpression" value="ScalarExpressionContext">
+                          <tree type="string" value="StringContext">
+                            <tree type="TerminalNodeImpl" value="&quot;"></tree>
+                            <tree type="interpolatedStringPart" value="InterpolatedStringPartContext">
+                              <tree type="TerminalNodeImpl" value="base"></tree>
+                            </tree>
+                            <tree type="TerminalNodeImpl" value="&quot;"></tree>
+                          </tree>
+                        </tree>
+                      </tree>
+                    </tree>
+                  </tree>
+                </tree>
+              </tree>
+            </tree>
+            <tree type="TerminalNodeImpl" value=";"></tree>
+          </tree>
+        </tree>
+      </tree>
+      <tree type="topStatement" value="TopStatementContext">
+        <tree type="functionDeclaration" value="FunctionDeclarationContext">
+          <tree type="attributes" value="AttributesContext"></tree>
+          <tree type="TerminalNodeImpl" value="function"></tree>
+          <tree type="identifier" value="IdentifierContext">
+            <tree type="TerminalNodeImpl" value="sum"></tree>
+          </tree>
+          <tree type="TerminalNodeImpl" value="("></tree>
+          <tree type="formalParameterList" value="FormalParameterListContext">
+            <tree type="formalParameter" value="FormalParameterContext">
+              <tree type="attributes" value="AttributesContext"></tree>
+              <tree type="variableInitializer" value="VariableInitializerContext">
+                <tree type="TerminalNodeImpl" value="$a"></tree>
+              </tree>
+            </tree>
+            <tree type="TerminalNodeImpl" value=","></tree>
+            <tree type="formalParameter" value="FormalParameterContext">
+              <tree type="attributes" value="AttributesContext"></tree>
+              <tree type="variableInitializer" value="VariableInitializerContext">
+                <tree type="TerminalNodeImpl" value="$b"></tree>
+              </tree>
+            </tree>
+          </tree>
+          <tree type="TerminalNodeImpl" value=")"></tree>
+          <tree type="blockStatement" value="BlockStatementContext">
+            <tree type="TerminalNodeImpl" value="{"></tree>
+            <tree type="innerStatementList" value="InnerStatementListContext">
+              <tree type="innerStatement" value="InnerStatementContext">
+                <tree type="statement" value="StatementContext">
+                  <tree type="nonEmptyStatement" value="NonEmptyStatementContext">
+                    <tree type="returnStatement" value="ReturnStatementContext">
+                      <tree type="TerminalNodeImpl" value="return"></tree>
+                      <tree type="expression" value="ExpressionContext">
+                        <tree type="andOrExpression" value="AndOrExpressionContext">
+                          <tree type="comparisonExpression" value="ComparisonExpressionContext">
+                            <tree type="additionExpression" value="AdditionExpressionContext">
+                              <tree type="multiplicationExpression" value="MultiplicationExpressionContext">
+                                <tree type="notLeftRecursionExpression" value="ChainExpressionContext">
+                                  <tree type="chain" value="ChainContext">
+                                    <tree type="chainBase" value="ChainBaseContext">
+                                      <tree type="keyedVariable" value="KeyedVariableContext">
+                                        <tree type="TerminalNodeImpl" value="$a"></tree>
+                                      </tree>
+                                    </tree>
+                                    <tree type="memberAccess" value="MemberAccessContext">
+                                      <tree type="TerminalNodeImpl" value="-&gt;"></tree>
+                                      <tree type="keyedFieldName" value="KeyedFieldNameContext">
+                                        <tree type="keyedSimpleFieldName" value="KeyedSimpleFieldNameContext">
+                                          <tree type="identifier" value="IdentifierContext">
+                                            <tree type="TerminalNodeImpl" value="add"></tree>
+                                          </tree>
+                                        </tree>
+                                      </tree>
+                                      <tree type="actualArguments" value="ActualArgumentsContext">
+                                        <tree type="arguments" value="ArgumentsContext">
+                                          <tree type="TerminalNodeImpl" value="("></tree>
+                                          <tree type="actualArgument" value="ActualArgumentContext">
+                                            <tree type="expression" value="ExpressionContext">
+                                              <tree type="andOrExpression" value="AndOrExpressionContext">
+                                                <tree type="comparisonExpression" value="ComparisonExpressionContext">
+                                                  <tree type="additionExpression" value="AdditionExpressionContext">
+                                                    <tree type="multiplicationExpression" value="MultiplicationExpressionContext">
+                                                      <tree type="notLeftRecursionExpression" value="ChainExpressionContext">
+                                                        <tree type="chain" value="ChainContext">
+                                                          <tree type="chainBase" value="ChainBaseContext">
+                                                            <tree type="keyedVariable" value="KeyedVariableContext">
+                                                              <tree type="TerminalNodeImpl" value="$b"></tree>
+                                                            </tree>
+                                                          </tree>
+                                                        </tree>
+                                                      </tree>
+                                                    </tree>
+                                                  </tree>
+                                                </tree>
+                                              </tree>
+                                            </tree>
+                                          </tree>
+                                          <tree type="TerminalNodeImpl" value=")"></tree>
+                                        </tree>
+                                      </tree>
+                                    </tree>
+                                  </tree>
+                                </tree>
+                              </tree>
+                            </tree>
+                          </tree>
+                        </tree>
+                      </tree>
+                      <tree type="TerminalNodeImpl" value=";"></tree>
+                    </tree>
+                  </tree>
+                </tree>
+              </tree>
+            </tree>
+            <tree type="TerminalNodeImpl" value="}"></tree>
+          </tree>
+        </tree>
+      </tree>
+    </tree>
+  </tree>
+</root>

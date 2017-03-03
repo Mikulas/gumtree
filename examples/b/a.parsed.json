@@ -1,0 +1,212 @@
+{
+	"root": {
+		"type": "1",
+		"label": "label",
+		"typeLabel": "typeLabel",
+		"children": [
+			{
+				"type": "4",
+				"label": "PhpBlockContext",
+				"typeLabel": "phpBlock",
+				"pos": "7",
+				"length": "4",
+				"children": [
+					{
+						"type": "6",
+						"label": "TopStatementContext",
+						"typeLabel": "topStatement",
+						"pos": "7",
+						"length": "4",
+						"children": [
+							{
+								"type": "32",
+								"label": "NonEmptyStatementContext",
+								"typeLabel": "nonEmptyStatement",
+								"pos": "7",
+								"length": "4",
+								"children": [
+									{
+										"type": "49",
+										"label": "ExpressionStatementContext",
+										"typeLabel": "expressionStatement",
+										"pos": "7",
+										"length": "4",
+										"children": [
+											{
+												"type": "82",
+												"label": "ExpressionContext",
+												"typeLabel": "expression",
+												"pos": "7",
+												"length": "3",
+												"children": [
+													{
+														"type": "83",
+														"label": "AndOrExpressionContext",
+														"typeLabel": "andOrExpression",
+														"pos": "7",
+														"length": "3",
+														"children": [
+															{
+																"type": "84",
+																"label": "ComparisonExpressionContext",
+																"typeLabel": "comparisonExpression",
+																"pos": "7",
+																"length": "3",
+																"children": [
+																	{
+																		"type": "85",
+																		"label": "AdditionExpressionContext",
+																		"typeLabel": "additionExpression",
+																		"pos": "7",
+																		"length": "3",
+																		"children": [
+																			{
+																				"type": "85",
+																				"label": "AdditionExpressionContext",
+																				"typeLabel": "additionExpression",
+																				"pos": "7",
+																				"length": "1",
+																				"children": [
+																					{
+																						"type": "86",
+																						"label": "MultiplicationExpressionContext",
+																						"typeLabel": "multiplicationExpression",
+																						"pos": "7",
+																						"length": "1",
+																						"children": [
+																							{
+																								"type": "87",
+																								"label": "ScalarExpressionContext",
+																								"typeLabel": "notLeftRecursionExpression",
+																								"pos": "7",
+																								"length": "1",
+																								"children": [
+																									{
+																										"type": "106",
+																										"label": "ConstantContext",
+																										"typeLabel": "constant",
+																										"pos": "7",
+																										"length": "1",
+																										"children": [
+																											{
+																												"type": "107",
+																												"label": "LiteralConstantContext",
+																												"typeLabel": "literalConstant",
+																												"pos": "7",
+																												"length": "1",
+																												"children": [
+																													{
+																														"type": "108",
+																														"label": "NumericConstantContext",
+																														"typeLabel": "numericConstant",
+																														"pos": "7",
+																														"length": "1",
+																														"children": [
+																															{
+																																"type": "100000",
+																																"label": "2",
+																																"typeLabel": "TerminalNodeImpl",
+																																"pos": "7",
+																																"length": "1",
+																																"children": []
+																															}
+																														]
+																													}
+																												]
+																											}
+																										]
+																									}
+																								]
+																							}
+																						]
+																					}
+																				]
+																			},
+																			{
+																				"type": "100000",
+																				"label": "+",
+																				"typeLabel": "TerminalNodeImpl",
+																				"pos": "8",
+																				"length": "1",
+																				"children": []
+																			},
+																			{
+																				"type": "86",
+																				"label": "MultiplicationExpressionContext",
+																				"typeLabel": "multiplicationExpression",
+																				"pos": "9",
+																				"length": "1",
+																				"children": [
+																					{
+																						"type": "87",
+																						"label": "ScalarExpressionContext",
+																						"typeLabel": "notLeftRecursionExpression",
+																						"pos": "9",
+																						"length": "1",
+																						"children": [
+																							{
+																								"type": "106",
+																								"label": "ConstantContext",
+																								"typeLabel": "constant",
+																								"pos": "9",
+																								"length": "1",
+																								"children": [
+																									{
+																										"type": "107",
+																										"label": "LiteralConstantContext",
+																										"typeLabel": "literalConstant",
+																										"pos": "9",
+																										"length": "1",
+																										"children": [
+																											{
+																												"type": "108",
+																												"label": "NumericConstantContext",
+																												"typeLabel": "numericConstant",
+																												"pos": "9",
+																												"length": "1",
+																												"children": [
+																													{
+																														"type": "100000",
+																														"label": "1",
+																														"typeLabel": "TerminalNodeImpl",
+																														"pos": "9",
+																														"length": "1",
+																														"children": []
+																													}
+																												]
+																											}
+																										]
+																									}
+																								]
+																							}
+																						]
+																					}
+																				]
+																			}
+																		]
+																	}
+																]
+															}
+														]
+													}
+												]
+											},
+											{
+												"type": "100000",
+												"label": ";",
+												"typeLabel": "TerminalNodeImpl",
+												"pos": "10",
+												"length": "1",
+												"children": []
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

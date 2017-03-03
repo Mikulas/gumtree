@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+<root>
+  <context></context>
+  <tree type="1" label="label" typeLabel="typeLabel">
+    <tree type="4" label="PhpBlockContext" typeLabel="phpBlock" pos="7" length="55" other_pos="7" other_length="55">
+      <tree type="6" label="TopStatementContext" typeLabel="topStatement" pos="7" length="12" other_pos="7" other_length="12">
+        <tree type="32" label="NonEmptyStatementContext" typeLabel="nonEmptyStatement" pos="7" length="12" other_pos="7" other_length="12">
+          <tree type="65" label="EchoStatementContext" typeLabel="echoStatement" pos="7" length="12" other_pos="7" other_length="12">
+            <tree type="100000" label="echo" typeLabel="TerminalNodeImpl" pos="7" length="4" other_pos="7" other_length="4"></tree>
+            <tree type="80" label="ExpressionListContext" typeLabel="expressionList" pos="12" length="6" other_pos="12" other_length="6">
+              <tree type="82" label="ExpressionContext" typeLabel="expression" pos="12" length="6" other_pos="12" other_length="6">
+                <tree type="83" label="AndOrExpressionContext" typeLabel="andOrExpression" pos="12" length="6" other_pos="12" other_length="6">
+                  <tree type="84" label="ComparisonExpressionContext" typeLabel="comparisonExpression" pos="12" length="6" other_pos="12" other_length="6">
+                    <tree type="85" label="AdditionExpressionContext" typeLabel="additionExpression" pos="12" length="6" other_pos="12" other_length="6">
+                      <tree type="86" label="MultiplicationExpressionContext" typeLabel="multiplicationExpression" pos="12" length="6" other_pos="12" other_length="6">
+                        <tree type="87" label="ScalarExpressionContext" typeLabel="notLeftRecursionExpression" pos="12" length="6" other_pos="12" other_length="6">
+                          <tree type="111" label="StringContext" typeLabel="string" pos="12" length="6" other_pos="12" other_length="6">
+                            <tree type="100000" label="&quot;" typeLabel="TerminalNodeImpl" pos="12" length="1" other_pos="12" other_length="1"></tree>
+                            <tree type="112" label="InterpolatedStringPartContext" typeLabel="interpolatedStringPart" pos="13" length="4" other_pos="13" other_length="4">
+                              <tree type="100000" label="base" typeLabel="TerminalNodeImpl" pos="13" length="4" other_pos="13" other_length="4"></tree>
+                            </tree>
+                            <tree type="100000" label="&quot;" typeLabel="TerminalNodeImpl" pos="17" length="1" other_pos="17" other_length="1"></tree>
+                          </tree>
+                        </tree>
+                      </tree>
+                    </tree>
+                  </tree>
+                </tree>
+              </tree>
+            </tree>
+            <tree type="100000" label=";" typeLabel="TerminalNodeImpl" pos="18" length="1" other_pos="18" other_length="1"></tree>
+          </tree>
+        </tree>
+      </tree>
+      <tree type="6" label="TopStatementContext" typeLabel="topStatement" pos="21" length="41" other_pos="21" other_length="41">
+        <tree type="12" label="FunctionDeclarationContext" typeLabel="functionDeclaration" pos="21" length="41" other_pos="21" other_length="41">
+          <tree type="22" label="AttributesContext" typeLabel="attributes" pos="21" length="-2" other_pos="21" other_length="-2"></tree>
+          <tree type="100000" label="function" typeLabel="TerminalNodeImpl" pos="21" length="8" other_pos="21" other_length="8"></tree>
+          <tree type="127" label="IdentifierContext" typeLabel="identifier" pos="30" length="3" other_pos="30" other_length="3">
+            <tree type="100000" label="sum" typeLabel="TerminalNodeImpl" pos="30" length="3" other_pos="30" other_length="3"></tree>
+          </tree>
+          <tree type="100000" label="(" typeLabel="TerminalNodeImpl" pos="33" length="1" other_pos="33" other_length="1"></tree>
+          <tree type="60" label="FormalParameterListContext" typeLabel="formalParameterList" pos="34" length="6" other_pos="34" other_length="6">
+            <tree type="61" label="FormalParameterContext" typeLabel="formalParameter" pos="34" length="2" other_pos="34" other_length="2">
+              <tree type="22" label="AttributesContext" typeLabel="attributes" pos="34" length="0" other_pos="34" other_length="0"></tree>
+              <tree type="77" label="VariableInitializerContext" typeLabel="variableInitializer" pos="34" length="2" other_pos="34" other_length="2">
+                <tree type="100000" label="$a" typeLabel="TerminalNodeImpl" pos="34" length="2" other_pos="34" other_length="2"></tree>
+              </tree>
+            </tree>
+            <tree type="100000" label="," typeLabel="TerminalNodeImpl" pos="36" length="1" other_pos="36" other_length="1"></tree>
+            <tree type="61" label="FormalParameterContext" typeLabel="formalParameter" pos="38" length="2" other_pos="38" other_length="2">
+              <tree type="22" label="AttributesContext" typeLabel="attributes" pos="38" length="-1" other_pos="38" other_length="-1"></tree>
+              <tree type="77" label="VariableInitializerContext" typeLabel="variableInitializer" pos="38" length="2" other_pos="38" other_length="2">
+                <tree type="100000" label="$b" typeLabel="TerminalNodeImpl" pos="38" length="2" other_pos="38" other_length="2"></tree>
+              </tree>
+            </tree>
+          </tree>
+          <tree type="100000" label=")" typeLabel="TerminalNodeImpl" pos="40" length="1" other_pos="40" other_length="1"></tree>
+          <tree type="33" label="BlockStatementContext" typeLabel="blockStatement" pos="42" length="20" other_pos="42" other_length="20">
+            <tree type="100000" label="{" typeLabel="TerminalNodeImpl" pos="42" length="1" other_pos="42" other_length="1"></tree>
+            <tree type="28" label="InnerStatementListContext" typeLabel="innerStatementList" pos="45" length="15" other_pos="45" other_length="15">
+              <tree type="29" label="InnerStatementContext" typeLabel="innerStatement" pos="45" length="15" other_pos="45" other_length="15">
+                <tree type="30" label="StatementContext" typeLabel="statement" pos="45" length="15" other_pos="45" other_length="15">
+                  <tree type="32" label="NonEmptyStatementContext" typeLabel="nonEmptyStatement" pos="45" length="15" other_pos="45" other_length="15">
+                    <tree type="48" label="ReturnStatementContext" typeLabel="returnStatement" pos="45" length="15" other_pos="45" other_length="15">
+                      <tree type="100000" label="return" typeLabel="TerminalNodeImpl" pos="45" length="6" other_pos="45" other_length="6"></tree>
+                      <tree type="82" label="ExpressionContext" typeLabel="expression" pos="52" length="7" other_pos="52" other_length="7">
+                        <tree type="83" label="AndOrExpressionContext" typeLabel="andOrExpression" pos="52" length="7" other_pos="52" other_length="7">
+                          <tree type="84" label="ComparisonExpressionContext" typeLabel="comparisonExpression" pos="52" length="7" other_pos="52" other_length="7">
+                            <tree type="85" label="AdditionExpressionContext" typeLabel="additionExpression" pos="52" length="7" other_pos="52" other_length="7">
+                              <tree type="85" label="AdditionExpressionContext" typeLabel="additionExpression" pos="52" length="2" other_pos="52" other_length="2">
+                                <tree type="86" label="MultiplicationExpressionContext" typeLabel="multiplicationExpression" pos="52" length="2" other_pos="52" other_length="2">
+                                  <tree type="87" label="ChainExpressionContext" typeLabel="notLeftRecursionExpression" pos="52" length="2" other_pos="52" other_length="2">
+                                    <tree type="114" label="ChainContext" typeLabel="chain" pos="52" length="2" other_pos="52" other_length="2">
+                                      <tree type="119" label="ChainBaseContext" typeLabel="chainBase" pos="52" length="2" other_pos="52" other_length="2">
+                                        <tree type="122" label="KeyedVariableContext" typeLabel="keyedVariable" pos="52" length="2" other_pos="52" other_length="2">
+                                          <tree type="100000" label="$a" typeLabel="TerminalNodeImpl" pos="52" length="2" other_pos="52" other_length="2"></tree>
+                                        </tree>
+                                      </tree>
+                                    </tree>
+                                  </tree>
+                                </tree>
+                              </tree>
+                              <tree type="100000" label="+" typeLabel="TerminalNodeImpl" pos="55" length="1" other_pos="55" other_length="1"></tree>
+                              <tree type="86" label="MultiplicationExpressionContext" typeLabel="multiplicationExpression" pos="57" length="2" other_pos="57" other_length="2">
+                                <tree type="87" label="ChainExpressionContext" typeLabel="notLeftRecursionExpression" pos="57" length="2" other_pos="57" other_length="2">
+                                  <tree type="114" label="ChainContext" typeLabel="chain" pos="57" length="2" other_pos="57" other_length="2">
+                                    <tree type="119" label="ChainBaseContext" typeLabel="chainBase" pos="57" length="2" other_pos="57" other_length="2">
+                                      <tree type="122" label="KeyedVariableContext" typeLabel="keyedVariable" pos="57" length="2" other_pos="57" other_length="2">
+                                        <tree type="100000" label="$b" typeLabel="TerminalNodeImpl" pos="57" length="2" other_pos="57" other_length="2"></tree>
+                                      </tree>
+                                    </tree>
+                                  </tree>
+                                </tree>
+                              </tree>
+                            </tree>
+                          </tree>
+                        </tree>
+                      </tree>
+                      <tree type="100000" label=";" typeLabel="TerminalNodeImpl" pos="59" length="1" other_pos="59" other_length="1"></tree>
+                    </tree>
+                  </tree>
+                </tree>
+              </tree>
+            </tree>
+            <tree type="100000" label="}" typeLabel="TerminalNodeImpl" pos="61" length="1" other_pos="61" other_length="1"></tree>
+          </tree>
+        </tree>
+      </tree>
+    </tree>
+  </tree>
+</root>
