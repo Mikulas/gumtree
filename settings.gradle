@@ -1,6 +1,7 @@
 include 'benchmark',
         'client',
         'client.diff',
+        'client.merge',
         'core',
         'dist',
         'gen.antlr',
