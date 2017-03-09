@@ -23,6 +23,9 @@ package com.github.gumtreediff.client;
 import com.github.gumtreediff.gen.Generators;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.matchers.Matchers;
+import com.github.gumtreediff.matchers.MergeMapping;
+import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.merge.StrictMerge;
 import com.github.gumtreediff.utils.Couple;
 import com.github.gumtreediff.utils.Pair;
 import com.github.gumtreediff.tree.TreeContext;
@@ -121,27 +124,9 @@ public class Merge extends Client {
         left = getTreeContext(opts.left);
         right = getTreeContext(opts.right);
 
-        TreeContext fakeContext = new TreeContext().merge(base).merge(left).merge(right);
-
-        final Matcher matchLeft = matchTrees(base, left);
-        final Matcher matchRight = matchTrees(base, right);
-
-        PcsMerge merge = new PcsMerge(base, left, right, matchLeft, matchRight);
-
-        Set<Couple<Pcs, Pcs>> inconsistencies = merge.computeMerge();
-        System.out.printf("Inconsistencies count: %d\n", inconsistencies.size());
-        for (Couple<Pcs, Pcs> inconsistency : inconsistencies) {
-            System.out.println(Pcs.inspect(inconsistency, fakeContext));
-        }
-    }
-
-    protected Matcher matchTrees(TreeContext src, TreeContext dst) {
-        Matchers matchers = Matchers.getInstance();
-        Matcher matcher = (opts.matcher == null)
-                ? matchers.getMatcher(src.getRoot(), dst.getRoot())
-                : matchers.getMatcher(opts.matcher, src.getRoot(), dst.getRoot());
-        matcher.match();
-        return matcher;
+        final MergeMapping mergeMapping = new MergeMapping(base.getRoot(), left.getRoot(), right.getRoot());
+        StrictMerge merger = new StrictMerge(base.getRoot(), left.getRoot(), right.getRoot(), mergeMapping);
+        ITree mergedTree = merger.merge();
     }
 
     private TreeContext getTreeContext(String file) {

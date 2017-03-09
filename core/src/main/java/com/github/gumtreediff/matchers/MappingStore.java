@@ -39,6 +39,13 @@ public class MappingStore implements Iterable<Mapping> {
         dsts = new HashMap<>();
     }
 
+    public MappingStore invert() {
+        MappingStore store = new MappingStore();
+        store.dsts = new HashMap<>(this.srcs);
+        store.srcs = new HashMap<>(this.dsts);
+        return store;
+    }
+
     public Set<Mapping> asSet() {
         return new AbstractSet<Mapping>() {
 
