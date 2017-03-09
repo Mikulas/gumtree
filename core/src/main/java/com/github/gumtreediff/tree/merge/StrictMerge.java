@@ -111,7 +111,7 @@ public class StrictMerge {
         // Left is fully applied just by setting it as new state.
         // If this was a 2-way merge, we would just take $first.
 
-        final Map<Integer, List<ITree>> numberedFirstLine = new HashMap<>();
+        Map<Integer, List<ITree>> result = new HashMap<>();
         Integer index = 0;
         for (ITree child : first.getChildren()) {
             // Do not add nodes deleted in $second
@@ -122,28 +122,31 @@ public class StrictMerge {
 
             List<ITree> list = new ArrayList<>();
             list.add(child);
-            numberedFirstLine.put(index, list);
+            result.put(index, list);
             index++;
         }
 
-
-        // return positions in $second but keep position of additions from $first
-
-
-
-        List<ITree> secondWithoutDeleted = second.getChildren();
-        for (ITree child : secondWithoutDeleted) {
+        index = 0;
+        for (ITree child : second.getChildren()) {
+            // Do not add nodes deleted in $second
             ITree childInBase = mappings.baseToSecond.getSrc(child);
-            if (childInBase != null) {
-                if (deleted.contains(childInBase)) {
-                    secondWithoutDeleted.remove(child);
-                }
+            if (childInBase != null && deleted.contains(childInBase)) {
+                continue;
             }
+
+            // TODO only add inserts
+
+            List<ITree> list = new ArrayList<>();
+            list.add(child);
+            result.put(index, list);
+            index++;
         }
 
-        for (ITree child : secondWithoutDeleted) {
+// TODO tohle je potreba prepsat. Je nutny trackovat jake nody se posunuly (bez vlivu insertu).
+// Pokud obe strany node posunout na jinou pozici, je to kolize. Pokud jedna strana neposune,
+// vem zmenu.
 
-        }
+        return result;
     }
 
     private ITree createContainer(ITree baseTree, ITree leftTree, ITree rightTree) throws ConflictException {
