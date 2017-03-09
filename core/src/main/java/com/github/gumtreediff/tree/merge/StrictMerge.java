@@ -4,11 +4,9 @@ import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.MergeMapping;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.Tree;
+import com.github.gumtreediff.utils.Pair;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by mikulas on 09/03/2017.
@@ -69,19 +67,20 @@ public class StrictMerge {
         }
     }
 
-    private List<ITree> applyChanges(ITree baseTree, ITree first, ITree second, Mappings mappings) {
+    private Map<Integer, List<ITree>> applyChanges(ITree baseTree, ITree first, ITree second, Mappings mappings) {
         List<ITree> baseChildren = baseTree.getChildren();
-        List<ITree> firstChildren = first.getChildren();
 
+
+        // find nodes deleted in $first
         List<ITree> firstChildrenInBase = new ArrayList<>();
-        for (ITree child : firstChildren) {
+        for (ITree child : first.getChildren()) {
             ITree childInBase = mappings.baseToFirst.getSrc(child);
             if (childInBase != null) {
                 firstChildrenInBase.add(childInBase);
             }
         }
 
-        Set<ITree> deleted = new HashSet<>();
+        Set<ITree> deleted = new HashSet<>(); // of base nodes
         for (ITree child : baseChildren) {
             // Node is deleted if it exists in base but not in branch
             if (! firstChildrenInBase.contains(child)) {
@@ -90,21 +89,61 @@ public class StrictMerge {
             }
         }
 
-// find (some?) insertions:
-        for (ITree child : first.getChildren()) {
-            ITree childInBase = mappings.baseToFirst.getSrc(child);
-            if (childInBase == null) {
-                // definitely inserted
-            } else if (!baseChildren.contains(childInBase)) {
-                // child was mapped to different parent in base, it's inserted here
+
+        // find nodes deleted in $second
+        List<ITree> secondChildrenInBase = new ArrayList<>();
+        for (ITree child : second.getChildren()) {
+            ITree childInBase = mappings.baseToSecond.getSrc(child);
+            if (childInBase != null) {
+                secondChildrenInBase.add(childInBase);
             }
         }
 
-        // a/ applying inserts and deletes (in base)
-        // b/ list of position changes (original=index -> new)
+        for (ITree child : baseChildren) {
+            // Node is deleted if it exists in base but not in branch
+            if (! secondChildrenInBase.contains(child)) {
+                // no child in $first mapped to this base node
+                deleted.add(child);
+            }
+        }
 
-        // c/ applying second onto first
-        // This will probably require mapping between first and second
+
+        // Left is fully applied just by setting it as new state.
+        // If this was a 2-way merge, we would just take $first.
+
+        final Map<Integer, List<ITree>> numberedFirstLine = new HashMap<>();
+        Integer index = 0;
+        for (ITree child : first.getChildren()) {
+            // Do not add nodes deleted in $second
+            ITree childInBase = mappings.baseToFirst.getSrc(child);
+            if (childInBase != null && deleted.contains(childInBase)) {
+                continue;
+            }
+
+            List<ITree> list = new ArrayList<>();
+            list.add(child);
+            numberedFirstLine.put(index, list);
+            index++;
+        }
+
+
+        // return positions in $second but keep position of additions from $first
+
+
+
+        List<ITree> secondWithoutDeleted = second.getChildren();
+        for (ITree child : secondWithoutDeleted) {
+            ITree childInBase = mappings.baseToSecond.getSrc(child);
+            if (childInBase != null) {
+                if (deleted.contains(childInBase)) {
+                    secondWithoutDeleted.remove(child);
+                }
+            }
+        }
+
+        for (ITree child : secondWithoutDeleted) {
+
+        }
     }
 
     private ITree createContainer(ITree baseTree, ITree leftTree, ITree rightTree) throws ConflictException {
