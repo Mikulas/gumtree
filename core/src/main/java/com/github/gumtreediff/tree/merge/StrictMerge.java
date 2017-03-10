@@ -2,6 +2,7 @@ package com.github.gumtreediff.tree.merge;
 
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.MergeMapping;
+import com.github.gumtreediff.tree.AbstractTree;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.Tree;
 
@@ -59,46 +60,95 @@ public class StrictMerge {
         // process starting node locks
         MergeListEntry leftNode = leftPtr.next();
         MergeListEntry rightNode = rightPtr.next();
-        boolean lastLeftLocked = leftNode.lockedWithRight;
-        boolean lastRightLocked = rightNode.lockedWithRight;
+        boolean lastLeftIsLocked = leftNode.lockedWithRight;
+        boolean lastRightIsLocked = rightNode.lockedWithRight;
 
         // move away from starting node
         leftNode = leftPtr.hasNext() ? leftPtr.next() : null;
         rightNode = rightPtr.hasNext() ? rightPtr.next() : null;
 
-        while (true) {
+        while (leftNode != null && rightNode != null) {
             assert leftNode instanceof MergeListEntryTree;
             assert rightNode instanceof MergeListEntryTree;
 
-            if (lastLeftLocked && lastRightLocked) {
-                if (mappedNodes(((MergeListEntryTree) leftNode).node, ((MergeListEntryTree) rightNode).node)) {
+            ITree left = leftNode == null ? new AbstractTree.FakeTree() : ((MergeListEntryTree) leftNode).node;
+            ITree right = rightNode == null ? new AbstractTree.FakeTree() : ((MergeListEntryTree) rightNode).node;
+
+            if (lastLeftIsLocked && lastRightIsLocked || mappedNodes(left, right)) {
+                // Locks require the nodes to be mapped, or the nodes are mapped.
+                // Either way we merge those two sides into one node and advance both pointers.
+
+                if (!mappedNodes(left, right)) {
                     throw new ConflictException();
                 }
-                // else both sides have same node
-                // TODO recurse and add to merged
-                // advance both pointers
 
-            } else if (lastLeftLocked) {
+                ITree parent = getParentOrFakeIt(left, right);
+                merged.addChild(merge(parent, left, right));
+
+                // advance both
+                lastLeftIsLocked = leftNode.lockedWithRight;
+                leftNode = leftPtr.hasNext() ? leftPtr.next() : null;
+                lastRightIsLocked = rightNode.lockedWithRight;
+                rightNode = rightPtr.hasNext() ? rightPtr.next() : null;
+
+            } else if (lastLeftIsLocked) {
+                assert !mappedNodes(left, right);
+
                 // add only left node
-                // and advance left
+                merged.addChild(left); // TODO verify this is valid
+                // TODO this should probably call into merge somehow, because it may contain mapped nodes underneath?
 
-            } else if (lastRightLocked) {
+                // advance left
+                lastLeftIsLocked = leftNode.lockedWithRight;
+                leftNode = leftPtr.hasNext() ? leftPtr.next() : null;
+
+            } else if (lastRightIsLocked) {
+                assert !mappedNodes(left, right);
+
                 // add only right node
-                // and advance right
+                merged.addChild(right); // TODO verify this is valid
+                // TODO this should probably call into merge somehow, because it may contain mapped nodes underneath?
+
+                // advance right
+                lastRightIsLocked = rightNode.lockedWithRight;
+                rightNode = rightPtr.hasNext() ? rightPtr.next() : null;
 
             } else {
                 // neither locked
                 // insertions and moves both lock, so next nodes should be same?
-                assert mappedNodes(((MergeListEntryTree) leftNode).node, ((MergeListEntryTree) rightNode).node);
+                assert mappedNodes(left, right);
+
                 // add node from both sides
+                ITree parent = getParentOrFakeIt(left, right);
+                merged.addChild(merge(parent, left, right));
+
                 // advance both
+                lastLeftIsLocked = leftNode.lockedWithRight;
+                leftNode = leftPtr.hasNext() ? leftPtr.next() : null;
+                lastRightIsLocked = rightNode.lockedWithRight;
+                rightNode = rightPtr.hasNext() ? rightPtr.next() : null;
             }
         }
 
         return merged;
     }
 
+    private ITree getParentOrFakeIt(ITree left, ITree right) {
+        ITree parent = mappings.getBaseToLeft().getSrc(left);
+        if (parent == null) {
+            // this is unlikely, if left and right are mapped, parent will be mapped on both sides
+            parent = mappings.getBaseToRight().getSrc(right);
+        }
+        if (parent == null) {
+            parent = new AbstractTree.FakeTree();
+        }
+        return parent;
+    }
+
     private boolean mappedNodes(ITree leftNode, ITree rightNode) {
+        if (leftNode == null || rightNode == null) {
+            return false;
+        }
         return mappings.getLeftToRight().getDst(leftNode) == rightNode;
     }
 
