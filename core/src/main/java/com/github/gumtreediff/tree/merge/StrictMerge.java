@@ -48,9 +48,10 @@ public class StrictMerge {
         deleted.addAll(getDeleted(baseTree, leftTree, mappings.getBaseToLeft()));
         deleted.addAll(getDeleted(baseTree, rightTree, mappings.getBaseToRight()));
 
-        // remove nodes missing in right from left
         List<MergeListEntry> leftList = makeMergeList(baseTree, leftTree, mappings.getBaseToLeft(), deleted);
-        // remove nodes missing in left from right
+        List<MergeListEntry> rightList = makeMergeList(baseTree, rightTree, mappings.getBaseToRight(), deleted);
+
+        
 
        return merged;
     }
@@ -85,11 +86,16 @@ public class StrictMerge {
             MergeListEntry current = new MergeListEntryTree(child);
             mergelist.add(current);
 
-            if (childInBase == null) { // TODO or if no in baseTree.children !
+            if (childInBase == null || !baseTree.getChildren().contains(childInBase)) {
                 // node inserted, lock both sides of it
                 last.lockedWithRight = true;
                 current.lockedWithRight = true;
             }
+            if (movedNodes.contains(childInBase)) {
+                last.lockedWithRight = true;
+                current.lockedWithRight = true;
+            }
+            // TODO is this all?
         }
 
         return mergelist;
