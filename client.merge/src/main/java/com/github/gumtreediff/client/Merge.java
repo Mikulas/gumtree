@@ -143,15 +143,17 @@ public class Merge extends Client {
     private void outputMergedCode(StrictMerge.SideAwareTree mergedTree, String leftSource, String rightSource, PrintStream out) {
         String source = mergedTree.getSide() == StrictMerge.Side.LEFT ? leftSource : rightSource;
 
-        ITree firstChild = mergedTree.getChildren().size() > 0 ? mergedTree.getChild(0) : null;
-        int start = mergedTree.getPos();
-        int end = firstChild == null ? start : firstChild.getPos();
-        if (start >= 0 && end >= 0) {
-            out.print(source.substring(start, end));
-        }
-
         if (mergedTree.getChildren().size() == 0) {
             out.print(source.substring(mergedTree.getPos(), mergedTree.getEndPos()));
+            return;
+        }
+
+
+        ITree firstChild = mergedTree.getChild(0);
+        int start = mergedTree.getPos();
+        int end = firstChild.getPos();
+        if (start >= 0 && end >= 0) {
+            out.print(source.substring(start, end));
         }
 
         for (ITree child : mergedTree.getChildren()) {
@@ -159,9 +161,9 @@ public class Merge extends Client {
             outputMergedCode((StrictMerge.SideAwareTree) child, leftSource, rightSource, out);
         }
 
-        ITree lastChild = mergedTree.getSize() > 0 ? mergedTree.getChild(mergedTree.getChildren().size() - 1) : null;
+        ITree lastChild = mergedTree.getChild(mergedTree.getChildren().size() - 1);
+        start = lastChild.getEndPos();
         end = mergedTree.getEndPos();
-        start = lastChild == null ? end : lastChild.getEndPos();
         if (start >= 0 && end >= 0) {
             out.print(source.substring(start, end));
         }
