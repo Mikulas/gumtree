@@ -21,6 +21,8 @@
 package com.github.gumtreediff.client;
 
 import com.github.gumtreediff.gen.Generators;
+import com.github.gumtreediff.io.TreeIoUtils;
+import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.matchers.Matchers;
 import com.github.gumtreediff.matchers.MergeMapping;
@@ -127,6 +129,11 @@ public class Merge extends Client {
         final MergeMapping mergeMapping = new MergeMapping(base.getRoot(), left.getRoot(), right.getRoot());
         StrictMerge merger = new StrictMerge(base.getRoot(), left.getRoot(), right.getRoot(), mergeMapping);
         ITree mergedTree = merger.merge();
+
+        TreeContext context = new TreeContext();
+        context.setRoot(mergedTree);
+        TreeIoUtils.toAnnotatedXml(context, true, new MappingStore())
+            .writeTo(System.out);
     }
 
     private TreeContext getTreeContext(String file) {

@@ -15,10 +15,16 @@ public class MergeMapping {
     public MergeMapping(ITree base, ITree left, ITree right) {
         Matchers matchers = Matchers.getInstance();
 
-        baseToLeft = matchers.getMatcher(base, left).getMappings();
-        baseToRight = matchers.getMatcher(base, right).getMappings();
-        leftToRight = matchers.getMatcher(left, right).getMappings();
+        baseToLeft = getMappings(matchers, base, left);
+        baseToRight = getMappings(matchers, base, right);
+        leftToRight = getMappings(matchers, left, right);
         rightToLeft = leftToRight.invert();
+    }
+
+    private MappingStore getMappings(Matchers matchers, ITree a, ITree b) {
+        Matcher matcher = matchers.getMatcher(a, b);
+        matcher.match();
+        return matcher.getMappings();
     }
 
     public MappingStore getBaseToLeft() {
