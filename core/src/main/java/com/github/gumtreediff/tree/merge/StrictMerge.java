@@ -33,6 +33,8 @@ public class StrictMerge {
         boolean lockedWithRight = false;
     }
 
+    private class StartMarker extends MergeListEntry {}
+
     private class MergeListEntryTree extends MergeListEntry {
         ITree node;
 
@@ -51,9 +53,53 @@ public class StrictMerge {
         List<MergeListEntry> leftList = makeMergeList(baseTree, leftTree, mappings.getBaseToLeft(), deleted);
         List<MergeListEntry> rightList = makeMergeList(baseTree, rightTree, mappings.getBaseToRight(), deleted);
 
-        
+        Iterator<MergeListEntry> leftPtr = leftList.iterator();
+        Iterator<MergeListEntry> rightPtr = rightList.iterator();
 
-       return merged;
+        // process starting node locks
+        MergeListEntry leftNode = leftPtr.next();
+        MergeListEntry rightNode = rightPtr.next();
+        boolean lastLeftLocked = leftNode.lockedWithRight;
+        boolean lastRightLocked = rightNode.lockedWithRight;
+
+        // move away from starting node
+        leftNode = leftPtr.hasNext() ? leftPtr.next() : null;
+        rightNode = rightPtr.hasNext() ? rightPtr.next() : null;
+
+        while (true) {
+            assert leftNode instanceof MergeListEntryTree;
+            assert rightNode instanceof MergeListEntryTree;
+
+            if (lastLeftLocked && lastRightLocked) {
+                if (mappedNodes(((MergeListEntryTree) leftNode).node, ((MergeListEntryTree) rightNode).node)) {
+                    throw new ConflictException();
+                }
+                // else both sides have same node
+                // TODO recurse and add to merged
+                // advance both pointers
+
+            } else if (lastLeftLocked) {
+                // add only left node
+                // and advance left
+
+            } else if (lastRightLocked) {
+                // add only right node
+                // and advance right
+
+            } else {
+                // neither locked
+                // insertions and moves both lock, so next nodes should be same?
+                assert mappedNodes(((MergeListEntryTree) leftNode).node, ((MergeListEntryTree) rightNode).node);
+                // add node from both sides
+                // advance both
+            }
+        }
+
+        return merged;
+    }
+
+    private boolean mappedNodes(ITree leftNode, ITree rightNode) {
+        return mappings.getLeftToRight().getDst(leftNode) == rightNode;
     }
 
     private Set<ITree> getDeleted(ITree baseTree, ITree sideTree, MappingStore mapping) {
@@ -70,7 +116,7 @@ public class StrictMerge {
 
     private List<MergeListEntry> makeMergeList(ITree baseTree, ITree sideTree, MappingStore mapping, Set<ITree> deletedBaseNodes) {
         List<MergeListEntry> mergelist = new ArrayList<>();
-        MergeListEntry startMarker = new MergeListEntry();
+        MergeListEntry startMarker = new StartMarker();
         mergelist.add(startMarker);
 
         List<ITree> movedNodes = getMovedNodes(baseTree, sideTree, mapping, deletedBaseNodes);
