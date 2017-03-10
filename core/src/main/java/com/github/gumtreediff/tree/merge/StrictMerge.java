@@ -1,5 +1,6 @@
 package com.github.gumtreediff.tree.merge;
 
+import com.github.gumtreediff.actions.LeavesClassifier;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.MergeMapping;
 import com.github.gumtreediff.tree.AbstractTree;
@@ -82,7 +83,7 @@ public class StrictMerge {
                     throw new ConflictException();
                 }
 
-                ITree parent = getParentOrFakeIt(left, right);
+                ITree parent = getCommonBaseForParentOrFakeIt(left, right);
                 merged.addChild(merge(parent, left, right));
 
                 // advance both
@@ -119,7 +120,7 @@ public class StrictMerge {
                 assert mappedNodes(left, right);
 
                 // add node from both sides
-                ITree parent = getParentOrFakeIt(left, right);
+                ITree parent = getCommonBaseForParentOrFakeIt(left, right);
                 merged.addChild(merge(parent, left, right));
 
                 // advance both
@@ -133,7 +134,7 @@ public class StrictMerge {
         return merged;
     }
 
-    private ITree getParentOrFakeIt(ITree left, ITree right) {
+    private ITree getCommonBaseForParentOrFakeIt(ITree left, ITree right) {
         ITree parent = mappings.getBaseToLeft().getSrc(left);
         if (parent == null) {
             // this is unlikely, if left and right are mapped, parent will be mapped on both sides
@@ -256,24 +257,50 @@ public class StrictMerge {
     }
 
     private ITree createContainer(ITree baseTree, ITree leftTree, ITree rightTree) throws ConflictException {
-        if (leftTree.getType() == rightTree.getType()) {
+        // TODO merge labels in same way
+        int type = mergeType(baseTree, leftTree, rightTree);
+        String label = mergeLabel(baseTree, leftTree, rightTree);
+        return new Tree(type, label);
+    }
+
+    private String mergeLabel(ITree baseTree, ITree leftTree, ITree rightTree) throws ConflictException {
+        if (leftTree.getLabel().equals(rightTree.getLabel())) {
             // Nothing changed or both changed from base to same value
-            return new Tree(leftTree.getType(), leftTree.getLabel());
-            // TODO throw if base left and right have different labels
+            return leftTree.getLabel();
 
-        } else if (baseTree.getType() == leftTree.getType()) {
+        } else if (baseTree.getLabel().equals(leftTree.getLabel())) {
             // Left did not change, use right value, which is different
-            return new Tree(rightTree.getType(), rightTree.getLabel());
+            return rightTree.getLabel();
 
-        } else if (baseTree.getType() == rightTree.getType()) {
+        } else if (baseTree.getLabel().equals(rightTree.getLabel())) {
             // Right did not change, use left value, which is different
-            return new Tree(leftTree.getType(), leftTree.getLabel());
+            return leftTree.getLabel();
 
         } else {
             // all 3 changed, we cannot pick one
             throw new ConflictException(); // TODO text
         }
     }
+
+    private int mergeType(ITree baseTree, ITree leftTree, ITree rightTree) throws ConflictException {
+        if (leftTree.getType() == rightTree.getType()) {
+            // Nothing changed or both changed from base to same value
+            return leftTree.getType();
+
+        } else if (baseTree.getType() == leftTree.getType()) {
+            // Left did not change, use right value, which is different
+            return rightTree.getType();
+
+        } else if (baseTree.getType() == rightTree.getType()) {
+            // Right did not change, use left value, which is different
+            return leftTree.getType();
+
+        } else {
+            // all 3 changed, we cannot pick one
+            throw new ConflictException(); // TODO text
+        }
+    }
+
 
     class ConflictException extends Exception {}
 
