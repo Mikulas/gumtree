@@ -36,7 +36,10 @@ import com.github.gumtreediff.tree.merge.PcsMerge;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Register(description = "A simple tree merger", options = Merge.Options.class)
@@ -128,12 +131,40 @@ public class Merge extends Client {
 
         final MergeMapping mergeMapping = new MergeMapping(base.getRoot(), left.getRoot(), right.getRoot());
         StrictMerge merger = new StrictMerge(base.getRoot(), left.getRoot(), right.getRoot(), mergeMapping);
-        ITree mergedTree = merger.merge();
+        StrictMerge.SideAwareTree mergedTree = (StrictMerge.SideAwareTree) merger.merge();
 
-        TreeContext context = new TreeContext();
-        context.setRoot(mergedTree);
-        TreeIoUtils.toAnnotatedXml(context, true, new MappingStore())
-            .writeTo(System.out);
+        String leftSource = new String(Files.readAllBytes(Paths.get(opts.left)));
+        String rightSource = new String(Files.readAllBytes(Paths.get(opts.right)));
+
+        System.out.println("<?php");
+        outputMergedCode(mergedTree, leftSource, rightSource, System.out);
+    }
+
+    private void outputMergedCode(StrictMerge.SideAwareTree mergedTree, String leftSource, String rightSource, PrintStream out) {
+        String source = mergedTree.getSide() == StrictMerge.Side.LEFT ? leftSource : rightSource;
+
+        ITree firstChild = mergedTree.getChildren().size() > 0 ? mergedTree.getChild(0) : null;
+        int start = mergedTree.getPos();
+        int end = firstChild == null ? start : firstChild.getPos();
+        if (start >= 0 && end >= 0) {
+            out.print(source.substring(start, end));
+        }
+
+        if (mergedTree.getChildren().size() == 0) {
+            out.print(source.substring(mergedTree.getPos(), mergedTree.getEndPos()));
+        }
+
+        for (ITree child : mergedTree.getChildren()) {
+            assert child instanceof StrictMerge.SideAwareTree;
+            outputMergedCode((StrictMerge.SideAwareTree) child, leftSource, rightSource, out);
+        }
+
+        ITree lastChild = mergedTree.getSize() > 0 ? mergedTree.getChild(mergedTree.getChildren().size() - 1) : null;
+        end = mergedTree.getEndPos();
+        start = lastChild == null ? end : lastChild.getEndPos();
+        if (start >= 0 && end >= 0) {
+            out.print(source.substring(start, end));
+        }
     }
 
     private TreeContext getTreeContext(String file) {

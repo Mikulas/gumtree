@@ -260,8 +260,8 @@ public class StrictMerge {
         BASE, LEFT, RIGHT
     };
 
-    private class SideAwareTree extends Tree {
-        Side side;
+    public class SideAwareTree extends Tree {
+        private Side side;
 
         public SideAwareTree(int type, String label, Side side) {
             super(type, label);
@@ -273,6 +273,10 @@ public class StrictMerge {
             setPos(tree.getPos());
             setLength(tree.getLength());
             this.side = side;
+        }
+
+        public Side getSide() {
+            return side;
         }
     }
 
