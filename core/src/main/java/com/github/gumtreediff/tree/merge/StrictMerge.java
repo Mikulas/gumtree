@@ -96,7 +96,7 @@ public class StrictMerge {
                 assert !mappedNodes(left, right);
 
                 // add only left node
-                merged.addChild(left); // TODO verify this is valid
+                merged.addChild(new SideAwareTree(left, Side.LEFT)); // TODO verify this is valid
                 // TODO this should probably call into merge somehow, because it may contain mapped nodes underneath?
 
                 // advance left
@@ -107,7 +107,7 @@ public class StrictMerge {
                 assert !mappedNodes(left, right);
 
                 // add only right node
-                merged.addChild(right); // TODO verify this is valid
+                merged.addChild(new SideAwareTree(right, Side.RIGHT)); // TODO verify this is valid
                 // TODO this should probably call into merge somehow, because it may contain mapped nodes underneath?
 
                 // advance right
@@ -256,49 +256,75 @@ public class StrictMerge {
         return positions;
     }
 
-    private ITree createContainer(ITree baseTree, ITree leftTree, ITree rightTree) throws ConflictException {
-        // TODO merge labels in same way
-        int type = mergeType(baseTree, leftTree, rightTree);
-        String label = mergeLabel(baseTree, leftTree, rightTree);
-        return new Tree(type, label);
-    }
+    public enum Side {
+        BASE, LEFT, RIGHT
+    };
 
-    private String mergeLabel(ITree baseTree, ITree leftTree, ITree rightTree) throws ConflictException {
-        if (leftTree.getLabel().equals(rightTree.getLabel())) {
-            // Nothing changed or both changed from base to same value
-            return leftTree.getLabel();
+    private class SideAwareTree extends Tree {
+        Side side;
 
-        } else if (baseTree.getLabel().equals(leftTree.getLabel())) {
-            // Left did not change, use right value, which is different
-            return rightTree.getLabel();
+        public SideAwareTree(int type, String label, Side side) {
+            super(type, label);
+            this.side = side;
+        }
 
-        } else if (baseTree.getLabel().equals(rightTree.getLabel())) {
-            // Right did not change, use left value, which is different
-            return leftTree.getLabel();
-
-        } else {
-            // all 3 changed, we cannot pick one
-            throw new ConflictException(); // TODO text
+        public SideAwareTree(ITree tree, Side side) {
+            super(tree.getType(), tree.getLabel());
+            setPos(tree.getPos());
+            setLength(tree.getLength());
+            this.side = side;
         }
     }
 
-    private int mergeType(ITree baseTree, ITree leftTree, ITree rightTree) throws ConflictException {
+    private ITree createContainer(ITree baseTree, ITree leftTree, ITree rightTree) throws ConflictException {
+        int type;
+        String label;
+        Side side;
+
         if (leftTree.getType() == rightTree.getType()) {
             // Nothing changed or both changed from base to same value
-            return leftTree.getType();
+            type = leftTree.getType();
+            if (leftTree.getLabel().equals(rightTree.getLabel())) {
+                // Nothing changed or both changed from base to same value
+                label = leftTree.getLabel();
+                side = Side.LEFT;
+
+            } else if (baseTree.getLabel().equals(leftTree.getLabel())) {
+                // Left did not change, use right value, which is different
+                label = rightTree.getLabel();
+                side = Side.RIGHT;
+
+            } else if (baseTree.getLabel().equals(rightTree.getLabel())) {
+                // Right did not change, use left value, which is different
+                label = leftTree.getLabel();
+                side = Side.LEFT;
+
+            } else {
+                // all 3 changed, we cannot pick one
+                throw new ConflictException(); // TODO text
+            }
 
         } else if (baseTree.getType() == leftTree.getType()) {
             // Left did not change, use right value, which is different
-            return rightTree.getType();
+            type = rightTree.getType();
+            label = rightTree.getLabel();
+            side = Side.RIGHT;
 
         } else if (baseTree.getType() == rightTree.getType()) {
             // Right did not change, use left value, which is different
-            return leftTree.getType();
+            type = leftTree.getType();
+            label = leftTree.getLabel();
+            side = Side.LEFT;
 
         } else {
             // all 3 changed, we cannot pick one
             throw new ConflictException(); // TODO text
         }
+
+        ITree tree = new SideAwareTree(type, label, side);
+        tree.setLength(side == Side.LEFT ? leftTree.getLength() : rightTree.getLength());
+        tree.setPos(side == Side.LEFT ? leftTree.getPos() : rightTree.getPos());
+        return tree;
     }
 
 
