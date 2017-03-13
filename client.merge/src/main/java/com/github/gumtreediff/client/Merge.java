@@ -138,12 +138,6 @@ public class Merge extends Client {
 
         ResultPrinter printer = new ResultPrinter(System.out);
         printer.outputMergedCode(mergedTree, leftSource, rightSource);
-
-        System.out.println("\n---------------------------");
-        TreeContext context = new TreeContext();
-        context.setRoot(mergedTree);
-        TreeIoUtils.toAnnotatedXml(context, true, new MappingStore())
-                .writeTo(System.out);
     }
 
     private TreeContext getTreeContext(String file) {
