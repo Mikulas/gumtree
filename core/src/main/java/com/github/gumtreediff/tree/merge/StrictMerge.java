@@ -1,6 +1,5 @@
 package com.github.gumtreediff.tree.merge;
 
-import com.github.gumtreediff.actions.LeavesClassifier;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.MergeMapping;
 import com.github.gumtreediff.tree.AbstractTree;
@@ -133,7 +132,7 @@ public class StrictMerge {
     }
 
     private ITree convertToSideAware(ITree tree, Side side) {
-        ITree converted = new SideAwareTree(tree, side);
+        ITree converted = new SideAwareTree(tree, side, findPreviousTokenEnd(tree));
         for (ITree child : tree.getChildren()) {
             converted.addChild(convertToSideAware(child, side));
         }
@@ -268,21 +267,28 @@ public class StrictMerge {
 
     public class SideAwareTree extends Tree {
         private Side side;
+        private int previousTokenEnd;
 
-        public SideAwareTree(int type, String label, Side side) {
+        public SideAwareTree(int type, String label, Side side, int lastTokenEnd) {
             super(type, label);
             this.side = side;
+            this.previousTokenEnd = lastTokenEnd;
         }
 
-        public SideAwareTree(ITree tree, Side side) {
+        public SideAwareTree(ITree tree, Side side, int previousTokenEnd) {
             super(tree.getType(), tree.getLabel());
             setPos(tree.getPos());
             setLength(tree.getLength());
             this.side = side;
+            this.previousTokenEnd = previousTokenEnd;
         }
 
         public Side getSide() {
             return side;
+        }
+
+        public int getPreviousTokenEnd() {
+            return previousTokenEnd;
         }
     }
 
@@ -290,6 +296,7 @@ public class StrictMerge {
         int type;
         String label;
         Side side;
+        int previousTokenEnd;
 
         // This works correctly even with FakeTrees during insert
 
@@ -333,10 +340,33 @@ public class StrictMerge {
             throw new ConflictException(); // TODO text
         }
 
-        ITree tree = new SideAwareTree(type, label, side);
+        previousTokenEnd = findPreviousTokenEnd(side == Side.LEFT ? leftTree : rightTree);
+        ITree tree = new SideAwareTree(type, label, side, previousTokenEnd);
         tree.setLength(side == Side.LEFT ? leftTree.getLength() : rightTree.getLength());
         tree.setPos(side == Side.LEFT ? leftTree.getPos() : rightTree.getPos());
         return tree;
+    }
+
+    private int findPreviousTokenEnd(ITree tree) {
+        ITree parent = tree.getParent();
+        if (parent == null) {
+            return 0; // this is valid and we will use it to output file header before PhpBlock
+        }
+
+        ITree last = null;
+        for (ITree child : parent.getChildren()) {
+            if (child == tree) {
+                if (last == null) {
+                    // tree is first child of this parent, look above
+                    return findPreviousTokenEnd(parent);
+                }
+                return last.getEndPos();
+            }
+            last = child;
+        }
+
+        assert false;
+        return 0;
     }
 
 

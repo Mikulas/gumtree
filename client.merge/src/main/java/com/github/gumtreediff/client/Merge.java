@@ -133,45 +133,17 @@ public class Merge extends Client {
         StrictMerge merger = new StrictMerge(base.getRoot(), left.getRoot(), right.getRoot(), mergeMapping);
         StrictMerge.SideAwareTree mergedTree = (StrictMerge.SideAwareTree) merger.merge();
 
-        TreeContext context = new TreeContext();
-        context.setRoot(mergedTree);
-        TreeIoUtils.toAnnotatedXml(context, true, new MappingStore())
-            .writeTo(System.out);
-
         String leftSource = new String(Files.readAllBytes(Paths.get(opts.left)));
         String rightSource = new String(Files.readAllBytes(Paths.get(opts.right)));
 
-        System.out.println("<?php");
-        outputMergedCode(mergedTree, leftSource, rightSource, System.out);
-    }
+        ResultPrinter printer = new ResultPrinter(System.out);
+        printer.outputMergedCode(mergedTree, leftSource, rightSource);
 
-    private void outputMergedCode(StrictMerge.SideAwareTree mergedTree, String leftSource, String rightSource, PrintStream out) {
-        String source = mergedTree.getSide() == StrictMerge.Side.LEFT ? leftSource : rightSource;
-
-        if (mergedTree.getChildren().size() == 0) {
-            out.print(source.substring(mergedTree.getPos(), mergedTree.getEndPos()));
-            return;
-        }
-
-
-        ITree firstChild = mergedTree.getChild(0);
-        int start = mergedTree.getPos();
-        int end = firstChild.getPos();
-        if (start >= 0 && end >= 0) {
-            out.print(source.substring(start, end));
-        }
-
-        for (ITree child : mergedTree.getChildren()) {
-            assert child instanceof StrictMerge.SideAwareTree;
-            outputMergedCode((StrictMerge.SideAwareTree) child, leftSource, rightSource, out);
-        }
-
-        ITree lastChild = mergedTree.getChild(mergedTree.getChildren().size() - 1);
-        start = lastChild.getEndPos();
-        end = mergedTree.getEndPos();
-        if (start >= 0 && end >= 0) {
-            out.print(source.substring(start, end));
-        }
+        System.out.println("\n---------------------------");
+        TreeContext context = new TreeContext();
+        context.setRoot(mergedTree);
+        TreeIoUtils.toAnnotatedXml(context, true, new MappingStore())
+                .writeTo(System.out);
     }
 
     private TreeContext getTreeContext(String file) {
