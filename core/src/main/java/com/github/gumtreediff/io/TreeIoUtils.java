@@ -28,6 +28,7 @@ import com.github.gumtreediff.tree.TreeContext;
 import com.github.gumtreediff.tree.TreeContext.MetadataSerializers;
 import com.github.gumtreediff.tree.TreeContext.MetadataUnserializers;
 import com.github.gumtreediff.tree.TreeUtils;
+import com.github.gumtreediff.tree.merge.StrictMerge;
 import com.google.gson.stream.JsonWriter;
 
 import javax.xml.namespace.QName;
@@ -368,6 +369,9 @@ public final class TreeIoUtils {
             if (ITree.NO_VALUE != tree.getPos()) {
                 writer.writeAttribute("pos", Integer.toString(tree.getPos()));
                 writer.writeAttribute("length", Integer.toString(tree.getLength()));
+            }
+            if (tree instanceof StrictMerge.SideAwareTree) {
+                writer.writeAttribute("side", ((StrictMerge.SideAwareTree) tree).getSide().toString());
             }
         }
 

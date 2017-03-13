@@ -133,6 +133,11 @@ public class Merge extends Client {
         StrictMerge merger = new StrictMerge(base.getRoot(), left.getRoot(), right.getRoot(), mergeMapping);
         StrictMerge.SideAwareTree mergedTree = (StrictMerge.SideAwareTree) merger.merge();
 
+        TreeContext context = new TreeContext();
+        context.setRoot(mergedTree);
+        TreeIoUtils.toAnnotatedXml(context, true, new MappingStore())
+            .writeTo(System.out);
+
         String leftSource = new String(Files.readAllBytes(Paths.get(opts.left)));
         String rightSource = new String(Files.readAllBytes(Paths.get(opts.right)));
 
