@@ -96,8 +96,7 @@ public class StrictMerge {
                 assert !mappedNodes(left, right);
 
                 // add only left node
-                merged.addChild(new SideAwareTree(left, Side.LEFT)); // TODO verify this is valid
-                // TODO this should probably call into merge somehow, because it may contain mapped nodes underneath?
+                merged.addChild(convertToSideAware(left, Side.LEFT));
 
                 // advance left
                 lastLeftIsLocked = leftNode.lockedWithRight;
@@ -107,8 +106,7 @@ public class StrictMerge {
                 assert !mappedNodes(left, right);
 
                 // add only right node
-                merged.addChild(new SideAwareTree(right, Side.RIGHT)); // TODO verify this is valid
-                // TODO this should probably call into merge somehow, because it may contain mapped nodes underneath?
+                merged.addChild(convertToSideAware(right, Side.RIGHT));
 
                 // advance right
                 lastRightIsLocked = rightNode.lockedWithRight;
@@ -132,6 +130,14 @@ public class StrictMerge {
         }
 
         return merged;
+    }
+
+    private ITree convertToSideAware(ITree tree, Side side) {
+        ITree converted = new SideAwareTree(tree, side);
+        for (ITree child : tree.getChildren()) {
+            converted.addChild(convertToSideAware(child, side));
+        }
+        return converted;
     }
 
     private ITree getCommonBaseForParentOrFakeIt(ITree left, ITree right) {
@@ -284,6 +290,8 @@ public class StrictMerge {
         int type;
         String label;
         Side side;
+
+        // This works correctly even with FakeTrees during insert
 
         if (leftTree.getType() == rightTree.getType()) {
             // Nothing changed or both changed from base to same value
